@@ -3,9 +3,9 @@
 #include <Adafruit_Sensor.h>
 #include <WiFi.h>
 
-const char* ssid = "RPi3AP";
-const char* password = "raspberry";
-const char* host = "192.168.5.1"; // Raspberry Pi IP address
+const char* ssid = "YOUR SSID";
+const char* password = "SSID PASSWORD";
+const char* host = "HOST IP ADDRESS"; // Raspberry Pi IP address
 
 Adafruit_MPU6050 mpu;
 
