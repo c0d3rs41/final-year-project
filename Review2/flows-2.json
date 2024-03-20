@@ -1,0 +1,528 @@
+[
+    {
+        "id": "2c19d39ace442e13",
+        "type": "tab",
+        "label": "Flow 1",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "dd1fdce3ab90e7b2",
+        "type": "mqtt in",
+        "z": "2c19d39ace442e13",
+        "name": "",
+        "topic": "esp1/data",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "3010ce01468e7321",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 160,
+        "y": 720,
+        "wires": [
+            [
+                "cb133db1e15516bb",
+                "26b02c0953e79b9a"
+            ]
+        ]
+    },
+    {
+        "id": "f1f76ca0af5b420d",
+        "type": "file",
+        "z": "2c19d39ace442e13",
+        "name": "Writing data to file",
+        "filename": "filename",
+        "filenameType": "msg",
+        "appendNewline": false,
+        "createDir": true,
+        "overwriteFile": "false",
+        "encoding": "binary",
+        "x": 570,
+        "y": 820,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "cb133db1e15516bb",
+        "type": "debug",
+        "z": "2c19d39ace442e13",
+        "name": "debug 1",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 460,
+        "y": 720,
+        "wires": []
+    },
+    {
+        "id": "b0567fd8e0ae88e2",
+        "type": "mqtt out",
+        "z": "2c19d39ace442e13",
+        "name": "",
+        "topic": "esp1/toggle",
+        "qos": "",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "3010ce01468e7321",
+        "x": 730,
+        "y": 140,
+        "wires": []
+    },
+    {
+        "id": "f324ed69e8f1f9ba",
+        "type": "debug",
+        "z": "2c19d39ace442e13",
+        "name": "Toggle Value",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 490,
+        "y": 100,
+        "wires": []
+    },
+    {
+        "id": "63993d5e024fa2b0",
+        "type": "ui_time_scheduler",
+        "z": "2c19d39ace442e13",
+        "group": "d9b17faf639f40d9",
+        "name": "",
+        "startDay": 0,
+        "refresh": 60,
+        "devices": [
+            "Device 1"
+        ],
+        "singleOff": false,
+        "onlySendChange": false,
+        "customPayload": false,
+        "eventMode": true,
+        "eventOptions": [
+            {
+                "label": "On",
+                "event": "1"
+            },
+            {
+                "label": "Off",
+                "event": "0"
+            }
+        ],
+        "sendTopic": false,
+        "lat": "",
+        "lon": "",
+        "customContextStore": "",
+        "outputs": 2,
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "x": 190,
+        "y": 120,
+        "wires": [
+            [
+                "f324ed69e8f1f9ba"
+            ],
+            [
+                "f324ed69e8f1f9ba",
+                "b0567fd8e0ae88e2",
+                "c91cec1418e5cf37"
+            ]
+        ]
+    },
+    {
+        "id": "27a723e915091306",
+        "type": "inject",
+        "z": "2c19d39ace442e13",
+        "name": "Force On",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "1",
+        "payloadType": "str",
+        "x": 420,
+        "y": 180,
+        "wires": [
+            [
+                "b0567fd8e0ae88e2"
+            ]
+        ]
+    },
+    {
+        "id": "f7ba0e6d3341f1c5",
+        "type": "inject",
+        "z": "2c19d39ace442e13",
+        "name": "Force Off",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "0",
+        "payloadType": "str",
+        "x": 420,
+        "y": 240,
+        "wires": [
+            [
+                "b0567fd8e0ae88e2"
+            ]
+        ]
+    },
+    {
+        "id": "c91cec1418e5cf37",
+        "type": "function",
+        "z": "2c19d39ace442e13",
+        "name": "setFilename",
+        "func": "// Generate file name\nvar currentDate = new Date();\nvar fileName = \"ESP1_\" + currentDate.getFullYear() +\n    (\"0\" + (currentDate.getMonth() + 1)).slice(-2) +\n    (\"0\" + currentDate.getDate()).slice(-2) + \"_\" +\n    (\"0\" + currentDate.getHours()).slice(-2) +\n    (\"0\" + currentDate.getMinutes()).slice(-2) +\n    //(\"0\" + currentDate.getSeconds()).slice(-2) +\n    \".raw\";\n\n// Set the file name in the message object\nif(msg.payload === 1)\n    flow.set(\"filename\",\"/home/edge/Documents/ESP1/\" + fileName);\nflow.set(\"toggle\",msg.payload);\n\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 410,
+        "y": 320,
+        "wires": [
+            [
+                "121367906128b8ce"
+            ]
+        ]
+    },
+    {
+        "id": "26b02c0953e79b9a",
+        "type": "function",
+        "z": "2c19d39ace442e13",
+        "name": "getFilename",
+        "func": "msg.filename = flow.get(\"filename\");\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 370,
+        "y": 820,
+        "wires": [
+            [
+                "f1f76ca0af5b420d"
+            ]
+        ]
+    },
+    {
+        "id": "285cd51cfd0275f4",
+        "type": "mqtt in",
+        "z": "2c19d39ace442e13",
+        "name": "",
+        "topic": "esp1/status",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "3010ce01468e7321",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 150,
+        "y": 40,
+        "wires": [
+            [
+                "0eb887bb8d02c079"
+            ]
+        ]
+    },
+    {
+        "id": "0eb887bb8d02c079",
+        "type": "ui_text",
+        "z": "2c19d39ace442e13",
+        "group": "d9b17faf639f40d9",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "name": "",
+        "label": "Device status",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "className": "",
+        "style": true,
+        "font": "",
+        "fontSize": 16,
+        "color": "#e32400",
+        "x": 380,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "20379d39a6be23df",
+        "type": "delay",
+        "z": "2c19d39ace442e13",
+        "name": "File conversion delay",
+        "pauseType": "delay",
+        "timeout": "2",
+        "timeoutUnits": "minutes",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 420,
+        "y": 420,
+        "wires": [
+            [
+                "3fd118912ae1529d"
+            ]
+        ]
+    },
+    {
+        "id": "121367906128b8ce",
+        "type": "switch",
+        "z": "2c19d39ace442e13",
+        "name": "",
+        "property": "toggle",
+        "propertyType": "flow",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "0",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 1,
+        "x": 250,
+        "y": 420,
+        "wires": [
+            [
+                "20379d39a6be23df"
+            ]
+        ]
+    },
+    {
+        "id": "3fd118912ae1529d",
+        "type": "function",
+        "z": "2c19d39ace442e13",
+        "name": "getFilename",
+        "func": "msg.filename = flow.get(\"filename\");\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 610,
+        "y": 420,
+        "wires": [
+            [
+                "a9245198cd67770b"
+            ]
+        ]
+    },
+    {
+        "id": "a9245198cd67770b",
+        "type": "exec",
+        "z": "2c19d39ace442e13",
+        "command": "/home/edge/Documents/convert.sh",
+        "addpay": "filename",
+        "append": "",
+        "useSpawn": "false",
+        "timer": "",
+        "winHide": false,
+        "oldrc": false,
+        "name": "",
+        "x": 340,
+        "y": 520,
+        "wires": [
+            [
+                "d90187041720d8db",
+                "34044a9c29c11124"
+            ],
+            [],
+            []
+        ]
+    },
+    {
+        "id": "d90187041720d8db",
+        "type": "debug",
+        "z": "2c19d39ace442e13",
+        "name": "debug 2",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 700,
+        "y": 480,
+        "wires": []
+    },
+    {
+        "id": "34044a9c29c11124",
+        "type": "delay",
+        "z": "2c19d39ace442e13",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "5",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 440,
+        "y": 600,
+        "wires": [
+            [
+                "7defd29e40a78216"
+            ]
+        ]
+    },
+    {
+        "id": "0e04bbf0c57ef149",
+        "type": "exec",
+        "z": "2c19d39ace442e13",
+        "command": "python3 /home/edge/Documents/connection.py",
+        "addpay": "filename",
+        "append": "",
+        "useSpawn": "false",
+        "timer": "",
+        "winHide": false,
+        "oldrc": false,
+        "name": "",
+        "x": 700,
+        "y": 640,
+        "wires": [
+            [
+                "efe8205ce7a72316"
+            ],
+            [],
+            []
+        ]
+    },
+    {
+        "id": "7defd29e40a78216",
+        "type": "function",
+        "z": "2c19d39ace442e13",
+        "name": "getNewWavFilename",
+        "func": "// Extract filename from the input path\nvar oldPath = flow.get(\"filename\");\nvar filename = oldPath.substring(oldPath.lastIndexOf(\"/\") + 1, oldPath.lastIndexOf(\".raw\"));\n\n// Construct the new path\nvar newPath = oldPath.replace(\".raw\", \".wav\").replace(\"ESP1/\", \"ESP1/audio/\");\n\n// Create the new message object\nvar newMsg = {\n    filename: newPath\n};\n\n// Send the new message object\nreturn newMsg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 660,
+        "y": 580,
+        "wires": [
+            [
+                "0e04bbf0c57ef149"
+            ]
+        ]
+    },
+    {
+        "id": "efe8205ce7a72316",
+        "type": "debug",
+        "z": "2c19d39ace442e13",
+        "name": "debug 3",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1000,
+        "y": 640,
+        "wires": []
+    },
+    {
+        "id": "3010ce01468e7321",
+        "type": "mqtt-broker",
+        "name": "RPi 3b+ MQTT Broker",
+        "broker": "localhost",
+        "port": "1883",
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": "4",
+        "keepalive": "60",
+        "cleansession": true,
+        "autoUnsubscribe": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthRetain": "false",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closeRetain": "false",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willRetain": "false",
+        "willPayload": "",
+        "willMsg": {},
+        "userProps": "",
+        "sessionExpiry": ""
+    },
+    {
+        "id": "d9b17faf639f40d9",
+        "type": "ui_group",
+        "name": "ESP32 1",
+        "tab": "52b35df7ab9ad87c",
+        "order": 1,
+        "disp": true,
+        "width": "6",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "52b35df7ab9ad87c",
+        "type": "ui_tab",
+        "name": "Test",
+        "icon": "dashboard",
+        "disabled": false,
+        "hidden": false
+    }
+]
